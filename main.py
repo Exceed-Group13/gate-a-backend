@@ -22,6 +22,14 @@ class Door(BaseModel):
     delay: int
     pin: str
 
+class Setting(BaseModel):
+    house_name: str
+    delay: int
+
+class Pin(BaseModel):
+    house_name: str
+    old_pin: str
+    new_pin:str
 
 data = [{
     "state": False,
@@ -42,3 +50,26 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.put("/setting") 
+def setting(detail: Setting):
+    """set delay for door to close"""
+    sett = collection.find_one_and_update({"house_name": detail.house_name},{'$set': {'delay': detail.delay}}) 
+    return {"delay": detail.delay}
+
+@app.get("/setting")
+def show_setting(detail: Setting):
+    """show detail on setting page"""
+    sett = collection.find_one({"house_name": detail.house_name})
+    return {"house_name": detail.house_name, "delay": detail.delay}
+
+@app.put("/resetpin")
+def reset_pin(detail: Pin):
+    """reset password"""
+    pwd = collection.find_one({"house_name": detail.house_name})
+    if detail.old_pin == pwd['pin']:
+        collection.find_one_and_update({"house_name": detail.house_name},{'$set': {'pin': detail.new_pin}})
+        return {"respond": "success"}
+    else:
+        return {"respond": "unsuccess"}     
+    
