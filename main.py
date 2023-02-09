@@ -71,4 +71,4 @@ def set_pin(detail: PinDetail):
     """Set the pin for the firt time."""
     collection.find_one_and_update({'house_name': detail.house_name}, 
         {'$set': {'pin': detail.pin}})
-    return {'response': "Pin changed successfully"}
+    return {'response': "Pin set successfully"}
