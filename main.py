@@ -100,6 +100,6 @@ def control_door(detail: HomeDetail):
 @app.put("/regis")
 def set_pin(detail: PinDetail):
     """Set the pin for the firt time."""
-    collection.find_one_and_update({'house_name': detail.house_name}, 
-        {'$set': {'pin': detail.pin}})
+    ori_db = collection.find_one({}, {'_id':0})
+    collection.find_one_and_update({"house_name": ori_db['house_name']}, {'$set': {'pin': detail.pin, 'house_name': detail.house_name}})
     return {'response': "Pin set successfully"}
