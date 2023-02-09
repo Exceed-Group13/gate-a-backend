@@ -30,6 +30,14 @@ class Pin(BaseModel):
     house_name: str
     old_pin: str
     new_pin:str
+    
+class HomeDetail(BaseModel):
+    state: bool
+    house_name: str
+    
+class PinDetail(BaseModel):
+    pin: str
+    house_name: str
 
 data = [{
     "state": False,
@@ -39,8 +47,8 @@ data = [{
 }]
 
 app = FastAPI()
-collection.delete_many({})
-a = collection.insert_many(data)
+# collection.delete_many({})
+# a = collection.insert_many(data)
 origins = ["*"]
 
 app.add_middleware(
@@ -73,3 +81,25 @@ def reset_pin(detail: Pin):
     else:
         return {"respond": "unsuccess"}     
     
+@app.get("/home")
+def show_status():
+    """Check the status of the door."""
+    door = collection.find({}, {'_id':0})
+    tmp = list()
+    for d in door:
+        tmp.append(d)
+    return {'result': tmp}
+
+@app.put("/home")
+def control_door(detail: HomeDetail):
+    """Close and open the door."""
+    collection.find_one_and_update({'house_name': detail.house_name}, 
+        {'$set': {'state': detail.state}})
+    return {'response': "Door change state successfully"}
+
+@app.post("/regis")
+def set_pin(detail: PinDetail):
+    """Set the pin for the firt time."""
+    collection.find_one_and_update({'house_name': detail.house_name}, 
+        {'$set': {'pin': detail.pin}})
+    return {'response': "Pin set successfully"}
