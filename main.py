@@ -66,10 +66,10 @@ def setting(detail: Setting):
     return {"delay": detail.delay}
 
 @app.get("/setting")
-def show_setting(detail: Setting):
+def show_setting():
     """show detail on setting page"""
-    sett = collection.find_one({"house_name": detail.house_name})
-    return {"house_name": detail.house_name, "delay": detail.delay}
+    sett = collection.find_one({}, {'_id':0})
+    return {"house_name": sett['house_name'], "delay": sett['delay']}
 
 @app.put("/resetpin")
 def reset_pin(detail: Pin):
