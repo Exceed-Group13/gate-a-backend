@@ -97,7 +97,7 @@ def control_door(detail: HomeDetail):
         {'$set': {'state': detail.state}})
     return {'response': "Door change state successfully"}
 
-@app.post("/regis")
+@app.put("/regis")
 def set_pin(detail: PinDetail):
     """Set the pin for the firt time."""
     collection.find_one_and_update({'house_name': detail.house_name}, 
