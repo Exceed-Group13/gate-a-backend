@@ -75,12 +75,12 @@ def show_setting():
 def reset_pin(detail: Pin):
     """reset password"""
     pwd = collection.find_one({"house_name": detail.house_name})
+    x = True
     for i in range(3):
-        if detail.old_pin[i] == pwd['pin'][i]:
-            x=True
-        else:
-            x=False
+        if detail.old_pin[i] != pwd['pin'][i]:
+            x = False
             break
+            
     if x:
         collection.find_one_and_update({"house_name": detail.house_name},{'$set': {'pin': detail.new_pin}})
         return {"respond": "success"}
