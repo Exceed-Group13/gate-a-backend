@@ -43,7 +43,8 @@ data = [{
     "state": False,
     "house_name": "house1",
     "delay": 1,
-    "pin": "123"
+    "pin": "123",
+    "alert": False
 }]
 
 app = FastAPI()
