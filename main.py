@@ -20,7 +20,7 @@ class Door(BaseModel):
     state: bool
     house_name: str
     delay: int
-    pin: str
+    pin: list
 
 class Setting(BaseModel):
     house_name: str
@@ -28,15 +28,15 @@ class Setting(BaseModel):
 
 class Pin(BaseModel):
     house_name: str
-    old_pin: str
-    new_pin:str
+    old_pin: list
+    new_pin: list
     
 class HomeDetail(BaseModel):
     state: bool
     house_name: str
     
 class PinDetail(BaseModel):
-    pin: str
+    pin: list
     house_name: str
 
 data = [{
@@ -75,11 +75,17 @@ def show_setting():
 def reset_pin(detail: Pin):
     """reset password"""
     pwd = collection.find_one({"house_name": detail.house_name})
-    if detail.old_pin == pwd['pin']:
+    for i in range(3):
+        if detail.old_pin[i] == pwd['pin'][i]:
+            x=True
+        else:
+            x=False
+            break
+    if x:
         collection.find_one_and_update({"house_name": detail.house_name},{'$set': {'pin': detail.new_pin}})
         return {"respond": "success"}
     else:
-        return {"respond": "unsuccess"}     
+        return {"respond": "unsuccess"}      
     
 @app.get("/home")
 def show_status():
